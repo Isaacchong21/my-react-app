@@ -12,7 +12,8 @@ const copy = {
     auth: 'Authentication',
     systemVersion: 'System: SFC-V1.0',
     openNotifications: 'Open notifications',
-    openAuthPage: 'Open login and registration page',
+    openAuthPage: 'Open profile settings',
+    logout: 'Logout',
     welcomeTitle: 'SFC Guide Center',
     welcomeSubtitle: "Professional digital training and certification for Sarawak's parks.",
     currentProgress: 'Current Progress',
@@ -107,7 +108,8 @@ const copy = {
     auth: 'Pengesahan',
     systemVersion: 'Sistem: SFC-V1.0',
     openNotifications: 'Buka pemberitahuan',
-    openAuthPage: 'Buka halaman log masuk dan daftar',
+    openAuthPage: 'Buka tetapan profil',
+    logout: 'Log Keluar',
     welcomeTitle: 'Pusat Panduan SFC',
     welcomeSubtitle: 'Latihan digital profesional dan pensijilan untuk taman Sarawak.',
     currentProgress: 'Kemajuan Semasa',
@@ -202,7 +204,8 @@ const copy = {
     auth: '认证',
     systemVersion: '系统: SFC-V1.0',
     openNotifications: '打开通知',
-    openAuthPage: '打开登录与注册页面',
+    openAuthPage: '打开个人设置',
+    logout: '退出登录',
     welcomeTitle: 'SFC 导览中心',
     welcomeSubtitle: '为砂拉越公园提供专业数字化培训与认证服务。',
     currentProgress: '当前进度',
@@ -340,6 +343,21 @@ function App() {
 
   const t = copy[language]
   const [selectedIds, setSelectedIds] = useState([])
+  const [authUser, setAuthUser] = useState(null)
+  const [authMode, setAuthMode] = useState('login')
+  const [authForm, setAuthForm] = useState({
+    role: 'guide',
+    email: '',
+    password: '',
+    resetToken: '',
+    newPassword: '',
+    fullName: '',
+    confirmPassword: '',
+    adminId: '',
+  })
+  const [authError, setAuthError] = useState('')
+  const [authInfo, setAuthInfo] = useState('')
+
   const navLabels = {
     dashboard: t.dashboard,
     training: t.training,
@@ -490,10 +508,171 @@ function App() {
     setSelectedIds([])
   }
 
-  const handleAuthSubmit = (event) => {
+  const apiBase = import.meta.env.VITE_API_URL ?? 'http://localhost:4000'
+
+  const handleAuthSubmit = async (event) => {
     event.preventDefault()
-    setActiveTab('dashboard')
-    alert(t.adminSuccess)
+    setAuthError('')
+    setAuthInfo('')
+
+    try {
+      if (authMode === 'login') {
+        if (!authForm.email || !authForm.password) {
+          setAuthError('Please enter email and password.')
+          return
+        }
+
+        const response = await fetch(`${apiBase}/api/auth/login`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            email: authForm.email,
+            password: authForm.password,
+            role: authForm.role,
+          }),
+        })
+
+        const data = await response.json()
+        if (!response.ok) {
+          setAuthError(data.message || 'Login failed.')
+          return
+        }
+
+        setAuthUser(data.user)
+        setProfile({
+          fullName: data.user.name,
+          email: data.user.email,
+          guideId: data.user.role_name === 'guide' ? data.user.user_id : data.user.user_id,
+        })
+        setActiveTab('dashboard')
+      } else if (authMode === 'register') {
+        if (!authForm.fullName || !authForm.email || !authForm.password || !authForm.confirmPassword) {
+          setAuthError('Please fill all registration fields.')
+          return
+        }
+        if (authForm.password !== authForm.confirmPassword) {
+          setAuthError(t.passwordMismatch)
+          return
+        }
+
+        const response = await fetch(`${apiBase}/api/auth/register`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            name: authForm.fullName,
+            email: authForm.email,
+            password: authForm.password,
+          }),
+        })
+
+        const data = await response.json()
+        if (!response.ok) {
+          setAuthError(data.message || 'Registration failed.')
+          return
+        }
+
+        setAuthUser(data.user)
+        setProfile({
+          fullName: data.user.name,
+          email: data.user.email,
+          guideId: data.user.user_id,
+        })
+        setActiveTab('dashboard')
+      } else if (authMode === 'forgot') {
+        if (!authForm.email) {
+          setAuthError('Please enter your email address.')
+          return
+        }
+
+        const response = await fetch(`${apiBase}/api/auth/forgot-password`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            email: authForm.email,
+          }),
+        })
+
+        const data = await response.json()
+        if (!response.ok) {
+          setAuthError(data.message || 'Unable to process forgot password request.')
+          return
+        }
+
+        if (data.resetToken) {
+          setAuthInfo(`${data.message} Reset token: ${data.resetToken}`)
+          setAuthForm((prev) => ({ ...prev, resetToken: data.resetToken }))
+        } else {
+          setAuthInfo(data.message || 'Reset token generated. Continue with password reset.')
+        }
+        setAuthMode('reset')
+      } else if (authMode === 'reset') {
+        if (!authForm.email || !authForm.resetToken || !authForm.newPassword || !authForm.confirmPassword) {
+          setAuthError('Please complete all reset password fields.')
+          return
+        }
+
+        if (authForm.newPassword !== authForm.confirmPassword) {
+          setAuthError(t.passwordMismatch)
+          return
+        }
+
+        const response = await fetch(`${apiBase}/api/auth/reset-password`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            email: authForm.email,
+            token: authForm.resetToken,
+            newPassword: authForm.newPassword,
+          }),
+        })
+
+        const data = await response.json()
+        if (!response.ok) {
+          setAuthError(data.message || 'Unable to reset password.')
+          return
+        }
+
+        setAuthInfo(data.message || 'Password has been reset. Please login with your new password.')
+        setAuthMode('login')
+        setAuthForm((prev) => ({
+          ...prev,
+          password: '',
+          resetToken: '',
+          newPassword: '',
+          confirmPassword: '',
+        }))
+      }
+    } catch (error) {
+      setAuthError(error.message || 'Unable to connect to the server.')
+    }
+  }
+
+  const handleLogout = () => {
+    setAuthUser(null)
+    setAuthMode('login')
+    setAuthForm({
+      role: 'guide',
+      email: '',
+      password: '',
+      resetToken: '',
+      newPassword: '',
+      fullName: '',
+      confirmPassword: '',
+      adminId: '',
+    })
+    setProfile({
+      fullName: '',
+      email: '',
+      guideId: '',
+    })
+    setPasswordForm({
+      currentPassword: '',
+      newPassword: '',
+      confirmPassword: '',
+    })
+    setAuthInfo('')
+    setAuthError('')
+    setActiveTab('auth')
   }
 
   const handleProfileSave = (event) => {
@@ -519,6 +698,226 @@ function App() {
     if (selectedIds.length === 0) return
     setSelectedIds((prev) => prev.filter((id) => notifications.some((n) => n.id === id)))
   }, [notifications, selectedIds.length])
+
+  if (!authUser) {
+    return (
+      <div className="layout auth-only-page">
+        <div className="auth-shell auth-only-shell">
+          <div className="auth-hero">
+            <span className="auth-tag">{t.secureAccess}</span>
+            <h1>{t.authWelcome}</h1>
+            <p>{t.authDesc}</p>
+          </div>
+
+          <div className="auth-card auth-only-card">
+            <div className="auth-mode-switch">
+              <button
+                type="button"
+                className={authMode === 'login' ? 'active' : ''}
+                onClick={() => {
+                  setAuthMode('login')
+                  setAuthError('')
+                  setAuthInfo('')
+                }}
+              >
+                {t.login}
+              </button>
+              <button
+                type="button"
+                className={authMode === 'register' ? 'active' : ''}
+                onClick={() => {
+                  setAuthMode('register')
+                  setAuthError('')
+                  setAuthInfo('')
+                }}
+              >
+                {t.register}
+              </button>
+            </div>
+
+            <form className="auth-form" onSubmit={handleAuthSubmit}>
+              {authMode === 'login' ? (
+                <>
+                  <label>
+                    {t.email}
+                    <input
+                      type="email"
+                      value={authForm.email}
+                      onChange={(e) => setAuthForm((prev) => ({ ...prev, email: e.target.value }))}
+                      required
+                    />
+                  </label>
+                  <label>
+                    {t.password}
+                    <input
+                      type="password"
+                      value={authForm.password}
+                      onChange={(e) => setAuthForm((prev) => ({ ...prev, password: e.target.value }))}
+                      required
+                    />
+                  </label>
+                  <label>
+                    {t.admin}
+                    <select
+                      value={authForm.role}
+                      onChange={(e) => setAuthForm((prev) => ({ ...prev, role: e.target.value }))}
+                    >
+                      <option value="guide">{t.userLogin}</option>
+                      <option value="admin">{t.adminLogin}</option>
+                    </select>
+                  </label>
+                  <button className="auth-submit" type="submit">
+                    {t.login}
+                  </button>
+                  <button
+                    className="auth-secondary"
+                    type="button"
+                    onClick={() => {
+                      setAuthMode('forgot')
+                      setAuthError('')
+                      setAuthInfo('')
+                      setAuthForm((prev) => ({
+                        ...prev,
+                        password: '',
+                        resetToken: '',
+                        newPassword: '',
+                        confirmPassword: '',
+                      }))
+                    }}
+                  >
+                    Forgot Password?
+                  </button>
+                </>
+              ) : authMode === 'register' ? (
+                <>
+                  <label>
+                    {t.fullName}
+                    <input
+                      type="text"
+                      value={authForm.fullName}
+                      onChange={(e) => setAuthForm((prev) => ({ ...prev, fullName: e.target.value }))}
+                      required
+                    />
+                  </label>
+                  <label>
+                    {t.email}
+                    <input
+                      type="email"
+                      value={authForm.email}
+                      onChange={(e) => setAuthForm((prev) => ({ ...prev, email: e.target.value }))}
+                      required
+                    />
+                  </label>
+                  <label>
+                    {t.password}
+                    <input
+                      type="password"
+                      value={authForm.password}
+                      onChange={(e) => setAuthForm((prev) => ({ ...prev, password: e.target.value }))}
+                      required
+                    />
+                  </label>
+                  <label>
+                    {t.confirmPassword}
+                    <input
+                      type="password"
+                      value={authForm.confirmPassword}
+                      onChange={(e) => setAuthForm((prev) => ({ ...prev, confirmPassword: e.target.value }))}
+                      required
+                    />
+                  </label>
+                  <button className="auth-submit" type="submit">
+                    {t.createAccount}
+                  </button>
+                </>
+              ) : authMode === 'forgot' ? (
+                <>
+                  <label>
+                    {t.email}
+                    <input
+                      type="email"
+                      value={authForm.email}
+                      onChange={(e) => setAuthForm((prev) => ({ ...prev, email: e.target.value }))}
+                      required
+                    />
+                  </label>
+                  <button className="auth-submit" type="submit">
+                    Request Reset Token
+                  </button>
+                  <button
+                    className="auth-secondary"
+                    type="button"
+                    onClick={() => {
+                      setAuthMode('login')
+                      setAuthError('')
+                      setAuthInfo('')
+                    }}
+                  >
+                    Back to Login
+                  </button>
+                </>
+              ) : (
+                <>
+                  <label>
+                    {t.email}
+                    <input
+                      type="email"
+                      value={authForm.email}
+                      onChange={(e) => setAuthForm((prev) => ({ ...prev, email: e.target.value }))}
+                      required
+                    />
+                  </label>
+                  <label>
+                    Reset Token
+                    <input
+                      type="text"
+                      value={authForm.resetToken}
+                      onChange={(e) => setAuthForm((prev) => ({ ...prev, resetToken: e.target.value }))}
+                      required
+                    />
+                  </label>
+                  <label>
+                    {t.newPassword}
+                    <input
+                      type="password"
+                      value={authForm.newPassword}
+                      onChange={(e) => setAuthForm((prev) => ({ ...prev, newPassword: e.target.value }))}
+                      required
+                    />
+                  </label>
+                  <label>
+                    {t.confirmPassword}
+                    <input
+                      type="password"
+                      value={authForm.confirmPassword}
+                      onChange={(e) => setAuthForm((prev) => ({ ...prev, confirmPassword: e.target.value }))}
+                      required
+                    />
+                  </label>
+                  <button className="auth-submit" type="submit">
+                    Reset Password
+                  </button>
+                  <button
+                    className="auth-secondary"
+                    type="button"
+                    onClick={() => {
+                      setAuthMode('login')
+                      setAuthError('')
+                      setAuthInfo('')
+                    }}
+                  >
+                    Back to Login
+                  </button>
+                </>
+              )}
+            </form>
+            {authInfo && <p className="auth-info">{authInfo}</p>}
+            {authError && <p className="auth-error">{authError}</p>}
+          </div>
+        </div>
+      </div>
+    )
+  }
 
   return (
     <div className={`layout theme-${theme} ${isCollapsed ? 'sidebar-hidden' : ''}`}>
@@ -567,12 +966,15 @@ function App() {
             <button
               className="user-circle"
               onClick={() => {
-                setActiveTab('auth')
+                setActiveTab('settings')
               }}
               aria-label={t.openAuthPage}
               type="button"
             >
               {profile.fullName.slice(0, 1).toUpperCase()}
+            </button>
+            <button className="logout-button" onClick={handleLogout} type="button">
+              {t.logout}
             </button>
           </div>
         </header>

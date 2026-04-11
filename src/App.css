@@ -52,6 +52,7 @@
 
 .theme-dark .menu-toggle,
 .theme-dark .top-bell-button,
+.theme-dark .logout-button,
 .theme-dark .notif-page-btn,
 .theme-dark .auth-mode-switch,
 .theme-dark .auth-mode-switch button,
@@ -63,6 +64,7 @@
 }
 
 .theme-dark .auth-form input,
+.theme-dark .auth-form select,
 .theme-dark .settings-form input {
   background: #132019;
   border-color: rgba(255, 255, 255, 0.13);
@@ -432,6 +434,24 @@
   display: flex;
   align-items: center;
   gap: 16px;
+}
+
+.logout-button {
+  border: 1px solid #d7e4dc;
+  background: #f4f8f5;
+  color: #1c4e33;
+  border-radius: 12px;
+  height: 45px;
+  padding: 0 16px;
+  font-weight: 800;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.logout-button:hover {
+  background: #dff0e5;
+  border-color: #379237;
+  color: #124227;
 }
 
 .top-bell-button {
@@ -1412,7 +1432,23 @@
   transition: border-color 0.2s, box-shadow 0.2s;
 }
 
+.auth-form select {
+  border: 1px solid #cfe4d8;
+  border-radius: 12px;
+  padding: 12px 14px;
+  background: #ffffff;
+  color: #1f2f28;
+  font-size: 0.95rem;
+  outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
 .auth-form input:focus {
+  border-color: #379237;
+  box-shadow: 0 0 0 3px rgba(55, 146, 55, 0.18);
+}
+
+.auth-form select:focus {
   border-color: #379237;
   box-shadow: 0 0 0 3px rgba(55, 146, 55, 0.18);
 }
@@ -1432,6 +1468,37 @@
 .auth-submit:hover {
   transform: translateY(-1px);
   box-shadow: 0 10px 20px rgba(22, 81, 50, 0.22);
+}
+
+.auth-secondary {
+  border: 1px solid #bed8c9;
+  border-radius: 12px;
+  padding: 10px 14px;
+  margin-top: 2px;
+  background: #eef6f1;
+  color: #1f5e3c;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.auth-info {
+  margin: 12px 0 0;
+  color: #166534;
+  background: #ebf9ef;
+  border: 1px solid #bce7c7;
+  border-radius: 10px;
+  padding: 10px 12px;
+  font-size: 0.9rem;
+}
+
+.auth-error {
+  margin: 12px 0 0;
+  color: #8a1e2a;
+  background: #fdecef;
+  border: 1px solid #f4bcc6;
+  border-radius: 10px;
+  padding: 10px 12px;
+  font-size: 0.9rem;
 }
 
 /* Settings page */

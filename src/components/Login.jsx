@@ -1,22 +1,45 @@
 import React, { useState } from 'react';
 import '../Login.css';
 
-const Login = () => {
+const Login = ({ onLoginSuccess }) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [role, setRole] = useState('guide');
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [message, setMessage] = useState('');
 
-  const handleLogin = () => {
+  const apiBase = import.meta.env.VITE_API_URL ?? 'http://localhost:4000';
+
+  const handleLogin = async () => {
     if (!email || !password) {
-      alert("Please enter both email and password!");
+      setMessage('Please enter both email and password.');
       return;
     }
-    if (email === "guide@example.com" && password === "1234" && role === "guide") {
-      alert("Guide login successful!");
-    } else if (email === "admin@example.com" && password === "admin" && role === "admin") {
-      alert("Admin login successful!");
-    } else {
-      alert("Invalid credentials. Try again!");
+
+    setIsSubmitting(true);
+    setMessage('');
+
+    try {
+      const response = await fetch(`${apiBase}/api/auth/login`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password, role }),
+      });
+
+      const data = await response.json();
+      if (!response.ok) {
+        setMessage(data.message || 'Invalid credentials. Try again.');
+        return;
+      }
+
+      setMessage('Login successful.');
+      if (typeof onLoginSuccess === 'function') {
+        onLoginSuccess(data.user);
+      }
+    } catch (error) {
+      setMessage(error.message || 'Unable to connect to server.');
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -29,8 +52,8 @@ const Login = () => {
       />
       <h1>Digital Park Login</h1>
       <input
-        type="text"
-        placeholder="Email / Username"
+        type="email"
+        placeholder="Email"
         value={email}
         onChange={e => setEmail(e.target.value)}
       />
@@ -44,7 +67,10 @@ const Login = () => {
         <option value="guide">Guide</option>
         <option value="admin">Admin</option>
       </select>
-      <button onClick={handleLogin}>Login</button>
+      <button onClick={handleLogin} disabled={isSubmitting}>
+        {isSubmitting ? 'Logging in...' : 'Login'}
+      </button>
+      {message && <p>{message}</p>}
       <div className="login-links">
       <a href="/register" className="register">Register User</a>
       <a href="#" className="forgot">Forgot Password?</a>
