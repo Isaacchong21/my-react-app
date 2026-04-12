@@ -29,7 +29,7 @@ const Login = ({ onLogin }) => {
         alt="Digital Park Guide Logo"
         className="logo"
       />
-      <h1>Digital Park Login</h1>
+      <h1 style={{color: 'var(--primary-dark)', marginBottom: '25px', fontWeight: '800'}}>Digital Park Login</h1>
       <input
         type="text"
         placeholder="Email / Username"
@@ -46,7 +46,7 @@ const Login = ({ onLogin }) => {
         <option value="guide">Guide</option>
         <option value="admin">Admin</option>
       </select>
-      <button onClick={handleLogin}>Login</button>
+      <button onClick={handleLogin} style={{background: 'linear-gradient(135deg, var(--primary-mid), var(--accent-green))'}}>Login</button>
       <div className="login-links">
       <a href="/register" className="register">Register User</a>
       <a href="#" className="forgot">Forgot Password?</a>

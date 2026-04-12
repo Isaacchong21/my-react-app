@@ -1,12 +1,14 @@
 import { useEffect, useMemo, useState } from 'react'
 import './App.css'
 import ProfilePage from './components/ProfilePage'
+import FileManager from './components/FileManager'
 
 const copy = {
   en: {
     portalTitle: 'Digital Portal',
     dashboard: 'Dashboard',
     training: 'Training',
+    files: 'Files',
     certs: 'Certificates',
     settings: 'Settings',
     notifications: 'Notifications',
@@ -51,13 +53,11 @@ const copy = {
     profileLocked: 'Profile editing is locked. Please login first.',
     passwordLocked: 'Password update is locked. Please login first.',
     loginToUnlock: 'Login to unlock',
+    changeProfilePicture: 'Change Profile Picture',
     saveProfile: 'Save Profile',
     updatePassword: 'Update Password',
     currentPassword: 'Current Password',
     newPassword: 'New Password',
-    themeMode: 'Theme Mode',
-    lightMode: 'Light',
-    darkMode: 'Dark',
     chooseLanguage: 'Choose Language',
     english: 'English',
     malay: 'Malay',
@@ -102,6 +102,7 @@ const copy = {
     portalTitle: 'Portal Digital',
     dashboard: 'Papan Pemuka',
     training: 'Latihan',
+    files: 'Fail',
     certs: 'Sijil',
     settings: 'Tetapan',
     notifications: 'Pemberitahuan',
@@ -147,12 +148,10 @@ const copy = {
     passwordLocked: 'Kemas kini kata laluan dikunci. Sila log masuk dahulu.',
     loginToUnlock: 'Log masuk untuk buka kunci',
     saveProfile: 'Simpan Profil',
+    changeProfilePicture: 'Tukar Gambar Profil',
     updatePassword: 'Kemas kini Kata Laluan',
     currentPassword: 'Kata Laluan Semasa',
     newPassword: 'Kata Laluan Baharu',
-    themeMode: 'Mod Tema',
-    lightMode: 'Cerah',
-    darkMode: 'Gelap',
     chooseLanguage: 'Pilih Bahasa',
     english: 'Inggeris',
     malay: 'Melayu',
@@ -197,6 +196,7 @@ const copy = {
     portalTitle: '数字门户',
     dashboard: '仪表板',
     training: '培训',
+    files: '文件',
     certs: '证书',
     settings: '设置',
     notifications: '通知',
@@ -242,12 +242,10 @@ const copy = {
     passwordLocked: '密码修改已锁定，请先登录。',
     loginToUnlock: '登录后解锁',
     saveProfile: '保存资料',
+    changeProfilePicture: '更换头像',
     updatePassword: '更新密码',
     currentPassword: '当前密码',
     newPassword: '新密码',
-    themeMode: '主题模式',
-    lightMode: '浅色',
-    darkMode: '深色',
     chooseLanguage: '选择语言',
     english: '英语',
     malay: '马来语',
@@ -294,7 +292,6 @@ function App() {
   const [activeTab, setActiveTab] = useState('dashboard')
   const [isCollapsed, setIsCollapsed] = useState(false)
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false)
-  const [theme, setTheme] = useState('light')
   const [language, setLanguage] = useState('en')
   const [profile, setProfile] = useState({
     fullName: '',
@@ -351,6 +348,7 @@ function App() {
     dashboard: t.dashboard,
     profile: 'Profile',
     training: t.training,
+    files: t.files,
     certs: t.certs,
     settings: t.settings,
     notifications: t.notifications,
@@ -533,7 +531,7 @@ function App() {
   }, [notifications, selectedIds.length])
 
   return (
-    <div className={`layout theme-${theme} ${isCollapsed ? 'sidebar-hidden' : ''}`}>
+    <div className={`layout theme- ${isCollapsed ? 'sidebar-hidden' : ''}`}>
       <aside className="sidebar">
         <div className="sidebar-header">
           <div className="sfc-logo">SFC</div>
@@ -548,9 +546,6 @@ function App() {
           </button>
           <button className={activeTab === 'certs' ? 'active' : ''} onClick={() => setActiveTab('certs')}>
             <span className="nav-icon">📜</span> {t.certs}
-          </button>
-          <button className={activeTab === 'settings' ? 'active' : ''} onClick={() => setActiveTab('settings')}>
-            <span className="nav-icon">⚙️</span> {t.settings}
           </button>
         </nav>
         <div style={{marginTop: 'auto', padding: '30px', borderTop: '1px solid rgba(255,255,255,0.1)'}}>
@@ -604,11 +599,11 @@ function App() {
                   type="button"
                   className="user-menu-item"
                   onClick={() => {
-                    setActiveTab('training')
+                    setActiveTab('files')
                     setIsUserMenuOpen(false)
                   }}
                 >
-                  Files
+                  {t.files}
                 </button>
                 <button
                   type="button"
@@ -664,6 +659,8 @@ function App() {
             <ProfilePage profile={profile} t={t} />
           )}
 
+          {activeTab === 'files' && <FileManager t={t} />}
+          
           {activeTab === 'training' && (
             <div className="training-page">
               <div className="training-view-switch">
@@ -1044,9 +1041,7 @@ function App() {
                           )}
                         </div>
                         <div>
-                          <label className="settings-avatar-button" htmlFor="avatar-upload">
-                            Change Profile Picture
-                          </label>
+                          <button className="settings-submit" type="submit">{t.changeProfilePicture}</button>
                           <input
                             id="avatar-upload"
                             type="file"
@@ -1106,29 +1101,6 @@ function App() {
                       <button className="settings-submit" type="submit">{t.updatePassword}</button>
                     </fieldset>
                   </form>
-                </section>
-
-                <section className="settings-card settings-panel">
-                  <h2>{t.appearanceSettings}</h2>
-                  <div className="inline-options">
-                    <span>{t.themeMode}</span>
-                    <div className="inline-buttons">
-                      <button
-                        type="button"
-                        className={theme === 'light' ? 'inline-active' : ''}
-                        onClick={() => setTheme('light')}
-                      >
-                        {t.lightMode}
-                      </button>
-                      <button
-                        type="button"
-                        className={theme === 'dark' ? 'inline-active' : ''}
-                        onClick={() => setTheme('dark')}
-                      >
-                        {t.darkMode}
-                      </button>
-                    </div>
-                  </div>
                 </section>
 
                 <section className="settings-card settings-panel">
