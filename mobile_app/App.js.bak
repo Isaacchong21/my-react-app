@@ -29,7 +29,10 @@ const copy = {
     verifiedCertificates: 'Verified Certificates',
     status: 'Status',
     active: 'Active',
+    adminLogin: 'Admin Login',
+    adminId: 'Admin ID',
     password: 'Password',
+    enterAdminPanel: 'Enter Admin Panel',
     filter: 'Filter',
     clearAll: 'Clear All',
     level: 'Level',
@@ -93,7 +96,10 @@ const copy = {
     verifiedCertificates: 'Sijil Disahkan',
     status: 'Status',
     active: 'Aktif',
+    adminLogin: 'Log Masuk Admin',
+    adminId: 'ID Admin',
     password: 'Kata Laluan',
+    enterAdminPanel: 'Masuk Panel Admin',
     filter: 'Penapis',
     clearAll: 'Kosongkan',
     level: 'Tahap',
@@ -157,7 +163,10 @@ const copy = {
     verifiedCertificates: '已验证证书',
     status: '状态',
     active: '活跃',
+    adminLogin: '管理员登录',
+    adminId: '管理员ID',
     password: '密码',
+    enterAdminPanel: '进入管理面板',
     filter: '筛选',
     clearAll: '清除',
     level: '等级',
@@ -253,7 +262,7 @@ function buildMonthMatrix(year, month) {
 export default function App() {
   const [language, setLanguage] = useState('en')
   const t = copy[language] || copy.en
-  const [activeTab, setActiveTab] = useState('dashboard')
+  const [activeTab, setActiveTab] = useState('auth')
   const [isNavOpen, setIsNavOpen] = useState(false)
   const [isNavMounted, setIsNavMounted] = useState(false)
   const [theme, setTheme] = useState('light')
