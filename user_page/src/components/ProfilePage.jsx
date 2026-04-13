@@ -32,11 +32,11 @@ const ProfilePage = ({ profile, t }) => {
             <div className="profile-value">{profile.email || '-'}</div>
           </div>
           <div className="profile-field">
-            <label>Birthday</label>
+            <label>{t.birthday}</label>
             <div className="profile-value">{profile.birthday || '-'}</div>
           </div>
           <div className="profile-field">
-            <label>Living Address</label>
+            <label>{t.livingAddress}</label>
             <div className="profile-value">{profile.address || '-'}</div>
           </div>
         </div>

@@ -10,9 +10,9 @@ const FileManager = ({ t }) => {
   ]);
 
   const courses = [
-    { value: 'biodiversity', label: 'Biodiversity' },
-    { value: 'field-training', label: 'Field Training' },
-    { value: 'lab-skills', label: 'Lab Skills' },
+    { value: 'biodiversity', label: t.biodiversity },
+    { value: 'field-training', label: t.fieldTraining },
+    { value: 'lab-skills', label: t.labSkills },
   ];
 
   const handleUpload = (e) => {
@@ -29,25 +29,25 @@ const FileManager = ({ t }) => {
           uploaded: new Date().toISOString().slice(0, 10),
         }, ...prev]);
         setUploadFile(null);
-        alert('File uploaded successfully!');
+        alert(t.fileUploadedSuccess);
       }, 1000);
     }
   };
 
   const handleDownload = (fileName) => {
-    alert(`Downloading ${fileName}... (Demo)`);
+    alert(`${t.downloadBtn} ${fileName}... (Demo)`);
     // Real: window.location.href = `/api/download/${fileName}`;
   };
 
   return (
     <div className="file-manager-page">
       <div className="page-header" style={{marginBottom: '30px'}}>
-        <h1 style={{margin: 0, color: 'var(--primary-dark)', fontWeight: '800'}}>Training Files ({t?.files || 'Files'})</h1>
-        <p style={{margin: '8px 0 0', color: '#636e72'}}>Upload and download files for your courses.</p>
+        <h1 style={{margin: 0, color: 'var(--primary-dark)', fontWeight: '800'}}>{t.trainingFilesTitle} ({t.files})</h1>
+        <p style={{margin: '8px 0 0', color: '#636e72'}}>{t.filesSubtitle}</p>
       </div>
 
       <div className="upload-section">
-        <h2>Upload File</h2>
+        <h2>{t.uploadSectionTitle}</h2>
         <div className="upload-form">
           <select
             value={selectedCourse}
@@ -64,22 +64,22 @@ const FileManager = ({ t }) => {
             onChange={handleUpload}
             className="file-input"
           />
-          {uploadFile && <div>Uploading {uploadFile.name}...</div>}
+{uploadFile && <div>{t.uploadFileStatus} {uploadFile.name}...</div>}
         </div>
       </div>
 
       <div className="files-grid">
-        <h2>Your Files</h2>
+        <h2>{t.yourFilesTitle}</h2>
         {files.map(file => (
           <div key={file.id} className="file-card">
             <div className="file-name">{file.name}</div>
             <div className="file-meta">
-              <span>Course: {file.course}</span>
-              <span>Size: {file.size}</span>
-              <span>Uploaded: {file.uploaded}</span>
+              <span>{t.courseLabel}: {file.course}</span>
+              <span>{t.sizeLabel}: {file.size}</span>
+              <span>{t.uploadedLabel}: {file.uploaded}</span>
             </div>
             <button onClick={() => handleDownload(file.name)} className="download-btn">
-              Download
+              {t.downloadBtn}
             </button>
           </div>
         ))}
@@ -87,7 +87,7 @@ const FileManager = ({ t }) => {
 
       {files.length === 0 && (
         <div className="empty-state">
-          <p>No files yet. Upload your first course file!</p>
+          <p>{t.filesEmpty}</p>
         </div>
       )}
     </div>

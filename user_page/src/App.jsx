@@ -13,6 +13,24 @@ const copy = {
     settings: 'Settings',
     notifications: 'Notifications',
     auth: 'Authentication',
+    profile: 'Profile',
+    logout: 'Logout',
+    birthday: 'Birthday',
+    livingAddress: 'Living Address',
+    uploadSectionTitle: 'Upload File',
+    yourFilesTitle: 'Your Files',
+    downloadBtn: 'Download',
+    trainingFilesTitle: 'Training Files',
+    filesSubtitle: 'Upload and download files for your courses.',
+    uploadFileStatus: 'Uploading',
+    biodiversity: 'Biodiversity',
+    fieldTraining: 'Field Training',
+    labSkills: 'Lab Skills',
+    courseLabel: 'Course',
+    sizeLabel: 'Size',
+    uploadedLabel: 'Uploaded',
+    filesEmpty: 'No files yet. Upload your first course file!',
+    fileUploadedSuccess: 'File uploaded successfully!',
     systemVersion: 'System: SFC-V1.0',
     openNotifications: 'Open notifications',
     openAuthPage: 'Open login and registration page',
@@ -107,6 +125,24 @@ const copy = {
     settings: 'Tetapan',
     notifications: 'Pemberitahuan',
     auth: 'Pengesahan',
+    profile: 'Profil',
+    logout: 'Log Keluar',
+    birthday: 'Tarikh Lahir',
+    livingAddress: 'Alamat Tinggal',
+    uploadSectionTitle: 'Muat Naik Fail',
+    yourFilesTitle: 'Fail Anda',
+    downloadBtn: 'Muat Turun',
+    trainingFilesTitle: 'Fail Latihan',
+    filesSubtitle: 'Muat naik dan muat turun fail untuk kursus anda.',
+    uploadFileStatus: 'Memuat naik',
+    biodiversity: 'Biodiversiti',
+    fieldTraining: 'Latihan Lapangan',
+    labSkills: 'Kemahiran Makmal',
+    courseLabel: 'Kursus',
+    sizeLabel: 'Saiz',
+    uploadedLabel: 'Dimuat Naik',
+    filesEmpty: 'Belum ada fail. Muat naik fail kursus pertama anda!',
+    fileUploadedSuccess: 'Fail berjaya dimuat naik!',
     systemVersion: 'Sistem: SFC-V1.0',
     openNotifications: 'Buka pemberitahuan',
     openAuthPage: 'Buka halaman log masuk dan daftar',
@@ -201,6 +237,24 @@ const copy = {
     settings: '设置',
     notifications: '通知',
     auth: '认证',
+    profile: '个人资料',
+    logout: '登出',
+    birthday: '生日',
+    livingAddress: '住址',
+    uploadSectionTitle: '上传文件',
+    yourFilesTitle: '您的文件',
+    downloadBtn: '下载',
+    trainingFilesTitle: '培训文件',
+    filesSubtitle: '上传和下载课程文件',
+    uploadFileStatus: '上传中',
+    biodiversity: '生物多样性',
+    fieldTraining: '实地培训',
+    labSkills: '实验室技能',
+    courseLabel: '课程',
+    sizeLabel: '大小',
+    uploadedLabel: '已上传',
+    filesEmpty: '暂无文件。上传您的第一个课程文件！',
+    fileUploadedSuccess: '文件上传成功！',
     systemVersion: '系统: SFC-V1.0',
     openNotifications: '打开通知',
     openAuthPage: '打开登录与注册页面',
@@ -593,7 +647,7 @@ function App() {
                     setIsUserMenuOpen(false)
                   }}
                 >
-                  Profile
+                  {t.profile}
                 </button>
                 <button
                   type="button"
@@ -613,14 +667,14 @@ function App() {
                     setIsUserMenuOpen(false)
                   }}
                 >
-                  Settings
+                  {t.settings}
                 </button>
                 <button
                   type="button"
                   className="user-menu-item user-menu-logout"
                   onClick={() => alert('Logout is not enabled yet.')}
                 >
-                  Logout
+                  {t.logout}
                 </button>
               </div>
             )}
