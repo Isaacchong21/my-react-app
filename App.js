@@ -56,6 +56,9 @@ const copy = {
     noteText: 'Note',
     notePlaceholder: 'Write an important reminder...',
     noMessages: 'No messages yet.',
+    profile: 'Profile',
+    files: 'Files',
+    logout: 'Logout',
     profileSettings: 'Profile Settings',
     passwordSettings: 'Password Settings',
     appearanceSettings: 'Appearance',
@@ -120,6 +123,9 @@ const copy = {
     noteText: 'Nota',
     notePlaceholder: 'Tulis peringatan penting...',
     noMessages: 'Belum ada mesej.',
+    profile: 'Profil',
+    files: 'Fail',
+    logout: 'Log Keluar',
     profileSettings: 'Tetapan Profil',
     passwordSettings: 'Tetapan Kata Laluan',
     appearanceSettings: 'Paparan',
@@ -184,6 +190,9 @@ const copy = {
     noteText: '备注',
     notePlaceholder: '记录重要事项...',
     noMessages: '暂无消息。',
+    profile: '个人资料',
+    files: '文件',
+    logout: '登出',
     profileSettings: '个人资料设置',
     passwordSettings: '密码设置',
     appearanceSettings: '外观',
@@ -230,7 +239,7 @@ const baseTheme = {
   },
 }
 
-const navTabs = ['dashboard', 'training', 'certs', 'notifications', 'settings']
+const navTabs = ['profile', 'files', 'dashboard', 'training', 'certs', 'notifications', 'settings', 'logout']
 const NAV_WIDTH = 250
 
 function formatDateKey(dateObj) {
