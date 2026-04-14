@@ -78,6 +78,9 @@ const copy = {
     english: 'English',
     malay: 'Malay',
     chinese: 'Chinese',
+    profile: 'Profile',
+    files: 'Files',
+    logout: 'Logout',
   },
   ms: {
     dashboard: 'Papan Pemuka',
@@ -142,6 +145,9 @@ const copy = {
     english: 'Inggeris',
     malay: 'Melayu',
     chinese: 'Cina',
+    profile: 'Profil',
+    files: 'Fail',
+    logout: 'Log Keluar',
   },
   zh: {
     dashboard: '仪表板',
@@ -206,6 +212,9 @@ const copy = {
     english: '英语',
     malay: '马来语',
     chinese: '华语',
+    profile: '个人资料',
+    files: '文件',
+    logout: '退出登录',
   },
 }
 
@@ -230,7 +239,7 @@ const baseTheme = {
   },
 }
 
-const navTabs = ['dashboard', 'training', 'certs', 'notifications', 'settings']
+const navTabs = ['profile', 'files', 'dashboard', 'training', 'certs', 'notifications', 'settings', 'logout']
 const NAV_WIDTH = 250
 
 function formatDateKey(dateObj) {
@@ -286,10 +295,12 @@ export default function App() {
   const monthCells = useMemo(() => buildMonthMatrix(calendarYear, calendarMonth), [calendarYear, calendarMonth])
 
   const toggleFilter = (group, value) => {
-    setFilters((prev) => {
-      const has = prev[group].includes(value)
-      return { ...prev, [group]: has ? prev[group].filter((x) => x !== value) : [...prev[group], value] }
-    })
+    setFilters((prev) => ({
+      ...prev,
+      [group]: prev[group].includes(value)
+        ? prev[group].filter((x) => x !== value)
+        : [...prev[group], value]
+    }))
   }
 
   const moveMonth = (delta) => {
@@ -396,11 +407,11 @@ export default function App() {
 
         {activeTab === 'auth' && (
           <View style={[styles.card, { backgroundColor: palette.panel, borderColor: palette.border }]}>
-            <Text style={[styles.h2, { color: palette.text }]}>{t.adminLogin}</Text>
-            <TextInput placeholder={t.adminId} placeholderTextColor={palette.muted} style={[styles.input, { color: palette.text, borderColor: palette.border }]} />
+            <Text style={[styles.h2, { color: palette.text }]}>{t.auth}</Text>
+            <TextInput placeholder="Admin ID" placeholderTextColor={palette.muted} style={[styles.input, { color: palette.text, borderColor: palette.border }]} />
             <TextInput placeholder={t.password} placeholderTextColor={palette.muted} secureTextEntry style={[styles.input, { color: palette.text, borderColor: palette.border }]} />
             <Pressable onPress={() => setActiveTab('dashboard')} style={[styles.primaryBtn, { backgroundColor: palette.accent }]}>
-              <Text style={styles.primaryBtnText}>{t.enterAdminPanel}</Text>
+              <Text style={styles.primaryBtnText}>Enter Admin Panel</Text>
             </Pressable>
           </View>
         )}
@@ -420,6 +431,30 @@ export default function App() {
                 </View>
               ))}
             </View>
+          </View>
+        )}
+
+        {activeTab === 'profile' && (
+          <View style={[styles.card, { backgroundColor: palette.panel, borderColor: palette.border }]}>
+            <Text style={[styles.h2, { color: palette.text }]}>Profile</Text>
+            <Text style={{ color: palette.muted }}>Profile page placeholder</Text>
+          </View>
+        )}
+
+        {activeTab === 'files' && (
+          <View style={[styles.card, { backgroundColor: palette.panel, borderColor: palette.border }]}>
+            <Text style={[styles.h2, { color: palette.text }]}>Files</Text>
+            <Text style={{ color: palette.muted }}>Files page placeholder</Text>
+          </View>
+        )}
+
+        {activeTab === 'logout' && (
+          <View style={[styles.card, { backgroundColor: palette.panel, borderColor: palette.border }]}>
+            <Text style={[styles.h2, { color: palette.text }]}>Logout</Text>
+            <Text style={{ color: palette.muted }}>Logout page placeholder</Text>
+            <Pressable style={[styles.primaryBtn, { backgroundColor: palette.accent }]} onPress={() => Alert.alert('Logged out')}>
+              <Text style={styles.primaryBtnText}>Confirm Logout</Text>
+            </Pressable>
           </View>
         )}
 
@@ -457,7 +492,7 @@ export default function App() {
                     <View key={idx} style={[styles.courseCard, { backgroundColor: palette.panel, borderColor: palette.border }]}>
                       <View style={[styles.courseThumb, { backgroundColor: theme === 'light' ? '#d7efe1' : '#1d2f27' }]} />
                       <View style={styles.courseBody}>
-                        <Text style={{ color: palette.text, fontWeight: '800' }}>—</Text>
+                        <Text style={{ color: palette.text, fontWeight: '800' }}>--</Text>
                         <Text style={{ color: palette.muted }}>Coming soon</Text>
                       </View>
                     </View>
@@ -702,7 +737,7 @@ export default function App() {
 
       <Modal visible={isFilterOpen} transparent animationType="slide">
         <Pressable style={styles.overlay} onPress={() => setIsFilterOpen(false)}>
-          <Pressable onPress={() => {}} style={[styles.sheet, { backgroundColor: palette.panel, borderColor: palette.border }]}>
+          <Pressable onPress={(e) => e.stopPropagation()} style={[styles.sheet, { backgroundColor: palette.panel, borderColor: palette.border }]}>
             <Text style={[styles.h2, { color: palette.text }]}>{t.filter}</Text>
             <Text style={[styles.sheetTitle, { color: palette.text }]}>{t.level}</Text>
             <Pressable onPress={() => toggleFilter('level', 'beginner')}><Text style={{ color: palette.text }}>{filters.level.includes('beginner') ? '☑' : '☐'} {t.beginner}</Text></Pressable>
@@ -720,7 +755,7 @@ export default function App() {
 
       <Modal visible={isEventModalOpen} transparent animationType="fade">
         <Pressable style={styles.overlay} onPress={() => setIsEventModalOpen(false)}>
-          <Pressable onPress={() => {}} style={[styles.modalCard, { backgroundColor: palette.panel, borderColor: palette.border }]}>
+          <Pressable onPress={(e) => e.stopPropagation()} style={[styles.modalCard, { backgroundColor: palette.panel, borderColor: palette.border }]}>
             <Text style={[styles.h2, { color: palette.text, marginBottom: 10 }]}>Edit event</Text>
             <TextInput placeholder={t.eventTitle} placeholderTextColor={palette.muted} value={eventTitle} onChangeText={setEventTitle} style={[styles.input, { color: palette.text, borderColor: palette.border }]} />
             <TextInput placeholder={t.noteDate} placeholderTextColor={palette.muted} value={noteDate} onChangeText={setNoteDate} style={[styles.input, { color: palette.text, borderColor: palette.border }]} />
