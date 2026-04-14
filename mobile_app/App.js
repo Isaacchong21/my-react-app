@@ -74,9 +74,7 @@ const copy = {
     passwordMismatch: 'New password and confirm password do not match.',
     passwordUpdated: 'Password updated successfully.',
     profileSaved: 'Profile updated successfully.',
-    themeMode: 'Theme Mode',
-    lightMode: 'Light',
-    darkMode: 'Dark',
+    chooseLanguage: 'Choose Language',
     chooseLanguage: 'Choose Language',
     english: 'English',
     malay: 'Malay',
@@ -141,9 +139,7 @@ const copy = {
     passwordMismatch: 'Kata laluan baharu dan pengesahan tidak sepadan.',
     passwordUpdated: 'Kata laluan berjaya dikemas kini.',
     profileSaved: 'Profil berjaya dikemas kini.',
-    themeMode: 'Mod Tema',
-    lightMode: 'Cerah',
-    darkMode: 'Gelap',
+    chooseLanguage: 'Pilih Bahasa',
     chooseLanguage: 'Pilih Bahasa',
     english: 'Inggeris',
     malay: 'Melayu',
@@ -208,9 +204,7 @@ const copy = {
     passwordMismatch: '新密码与确认密码不一致。',
     passwordUpdated: '密码更新成功。',
     profileSaved: '个人资料已更新。',
-    themeMode: '主题模式',
-    lightMode: '浅色',
-    darkMode: '深色',
+    chooseLanguage: '选择语言',
     chooseLanguage: '选择语言',
     english: '英语',
     malay: '马来语',
@@ -218,25 +212,14 @@ const copy = {
   },
 }
 
-const baseTheme = {
-  light: {
-    bg: '#f0f2f0',
-    panel: '#ffffff',
-    text: '#1f2f28',
-    muted: '#5f726a',
-    border: '#d8e4de',
-    accent: '#165132',
-    accentSoft: '#eaf5ef',
-  },
-  dark: {
-    bg: '#0f1b16',
-    panel: '#16241e',
-    text: '#e8f7ef',
-    muted: '#9bb0a7',
-    border: 'rgba(255,255,255,0.12)',
-    accent: '#379237',
-    accentSoft: '#1d2f27',
-  },
+const palette = {
+  bg: '#f0f2f0',
+  panel: '#ffffff',
+  text: '#1f2f28',
+  muted: '#5f726a',
+  border: '#d8e4de',
+  accent: '#165132',
+  accentSoft: '#eaf5ef',
 }
 
 const navTabs = ['profile', 'files', 'dashboard', 'training', 'certs', 'notifications', 'settings', 'logout']
@@ -265,7 +248,7 @@ export default function App() {
   const [activeTab, setActiveTab] = useState('dashboard')
   const [isNavOpen, setIsNavOpen] = useState(false)
   const [isNavMounted, setIsNavMounted] = useState(false)
-  const [theme, setTheme] = useState('light')
+
   const [trainingView, setTrainingView] = useState('courses')
   const [isFilterOpen, setIsFilterOpen] = useState(false)
   const [isEventModalOpen, setIsEventModalOpen] = useState(false)
@@ -291,7 +274,6 @@ export default function App() {
   const [profile, setProfile] = useState({ fullName: '', email: '', guideId: '' })
   const navTranslateX = useRef(new Animated.Value(-NAV_WIDTH)).current
 
-  const palette = baseTheme[theme]
   const monthCells = useMemo(() => buildMonthMatrix(calendarYear, calendarMonth), [calendarYear, calendarMonth])
 
   const toggleFilter = (group, value) => {
@@ -398,7 +380,7 @@ export default function App() {
 
   return (
     <SafeAreaView style={[styles.safe, { backgroundColor: palette.bg }]}>
-      <StatusBar style={theme === 'light' ? 'dark' : 'light'} />
+      <StatusBar style="dark" />
       {AppHeader}
       <ScrollView contentContainerStyle={styles.contentWrap}>
         <Text style={[styles.sectionLabel, { color: palette.muted }]}>SFC / {t[activeTab]}</Text>
@@ -464,7 +446,7 @@ export default function App() {
                 <View style={styles.courseGrid}>
                   {Array.from({ length: 8 }).map((_, idx) => (
                     <View key={idx} style={[styles.courseCard, { backgroundColor: palette.panel, borderColor: palette.border }]}>
-                      <View style={[styles.courseThumb, { backgroundColor: theme === 'light' ? '#d7efe1' : '#1d2f27' }]} />
+                      <View style={[styles.courseThumb, { backgroundColor: '#d7efe1' }]} />
                       <View style={styles.courseBody}>
                         <Text style={{ color: palette.text, fontWeight: '800' }}>—</Text>
                         <Text style={{ color: palette.muted }}>Coming soon</Text>
@@ -620,30 +602,7 @@ export default function App() {
               </Pressable>
             </View>
 
-            <View style={[styles.settingsSection, { borderColor: palette.border }]}>
-              <Text style={[styles.settingsTitle, { color: palette.text }]}>{t.appearanceSettings}</Text>
-              <Text style={{ color: palette.muted }}>{t.themeMode}</Text>
-              <View style={styles.rowGap}>
-                <Pressable
-                  onPress={() => setTheme('light')}
-                  style={[
-                    styles.chipBtn,
-                    { borderColor: palette.border, backgroundColor: theme === 'light' ? palette.accent : palette.panel },
-                  ]}
-                >
-                  <Text style={{ color: theme === 'light' ? '#fff' : palette.text }}>{t.lightMode}</Text>
-                </Pressable>
-                <Pressable
-                  onPress={() => setTheme('dark')}
-                  style={[
-                    styles.chipBtn,
-                    { borderColor: palette.border, backgroundColor: theme === 'dark' ? palette.accent : palette.panel },
-                  ]}
-                >
-                  <Text style={{ color: theme === 'dark' ? '#fff' : palette.text }}>{t.darkMode}</Text>
-                </Pressable>
-              </View>
-            </View>
+
 
             <View style={[styles.settingsSection, { borderColor: palette.border }]}>
               <Text style={[styles.settingsTitle, { color: palette.text }]}>{t.languageSettings}</Text>
